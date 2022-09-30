@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd /usr/local
+cd /usr/local/share
 git clone https://github.com/FlareSolverr/FlareSolverr flaresolverr
 cd flaresolverr
 
