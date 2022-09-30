@@ -55,7 +55,7 @@ cd ..
 
 # -- Set up service
 
-cat << EOF
+cat > /usr/local/etc/rc.d/flaresolverr << EOF
 #
 # Author: C. R. Zamana (czamana at gmail dot com)
 #
@@ -87,7 +87,7 @@ command="/usr/sbin/daemon"
 command_args="-P ${pidfile} /usr/local/bin/npm start > /dev/null"
 
 run_rc_command "$1"
-EOF > /usr/local/etc/rc.d/flaresolverr
+EOF  
 
 chmod +x /usr/local/etc/rc.d/flaresolverr
 
