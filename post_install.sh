@@ -5,14 +5,14 @@ git clone https://github.com/FlareSolverr/FlareSolverr flaresolverr
 cd flaresolverr
 
 # Checkout version 2.2.9
-git checkout c99101f74 
+git checkout c99101f74  
 
 # Required to make puppeteer install on FreeBSD
 export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 export PUPPETEER_EXECUTABLE_PATH=/usr/local/bin/chrome
 
 # get dependencies
-npm install
+npm install 
 
 # patch away puppeteer's arbitrary FreeBSD blocking 🙄
 cd node_modules 
@@ -50,6 +50,9 @@ diff -Naur node_modules/puppeteer/lib/cjs/puppeteer/node/BrowserFetcher.patch no
 +> //# sourceMappingURL=BrowserFetcher.js.map
 +\ No newline at end of file
 EOF
+
+# Compile typescript
+npm run build 
 
 cd ..
 
