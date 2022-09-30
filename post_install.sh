@@ -1,3 +1,5 @@
+#!/bin/sh
+
 cd /usr/local
 git clone https://github.com/FlareSolverr/FlareSolverr flaresolverr
 cd flaresolverr
@@ -6,8 +8,8 @@ cd flaresolverr
 git checkout c99101f74 
 
 # Required to make puppeteer install on FreeBSD
-setenv PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
-setenv PUPPETEER_EXECUTABLE_PATH /usr/local/bin/chrome
+export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+export PUPPETEER_EXECUTABLE_PATH=/usr/local/bin/chrome
 
 # get dependencies
 npm install
