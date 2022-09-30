@@ -66,16 +66,16 @@ cat > /usr/local/etc/rc.d/flaresolverr << EOF
 . /etc/rc.subr
 
 name="flaresolverr"
-rcvar="${name}_enable"
-load_rc_config ${name}
+rcvar="\${name}_enable"
+load_rc_config \${name}
 
-: ${flaresolverr_enable:="NO"}
+: \${flaresolverr_enable:="NO"}
 
 pidfile="/var/run/flaresolverr.pid"
 
 start_precmd="flaresolverr_precmd"
 
-PATH=$PATH:/usr/local/bin
+PATH=\$PATH:/usr/local/bin
 
 flaresolverr_precmd() {
         cd /usr/local/share/flaresolverr
@@ -84,10 +84,10 @@ flaresolverr_precmd() {
 }
 
 command="/usr/sbin/daemon"
-command_args="-P ${pidfile} /usr/local/bin/npm start > /dev/null"
+command_args="-P \${pidfile} /usr/local/bin/npm start > /dev/null"
 
-run_rc_command "$1"
-EOF  
+run_rc_command "\$1"
+EOF
 
 chmod +x /usr/local/etc/rc.d/flaresolverr
 
