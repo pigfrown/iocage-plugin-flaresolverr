@@ -4,57 +4,52 @@ cd /usr/local/share
 git clone https://github.com/FlareSolverr/FlareSolverr flaresolverr
 cd flaresolverr
 
-# Checkout version 2.2.9
-git checkout c99101f74  
+# Checkout version
+git checkout v3.0.2
 
-# Required to make puppeteer install on FreeBSD
-export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-export PUPPETEER_EXECUTABLE_PATH=/usr/local/bin/chrome
-
-# get dependencies
-npm install 
-
-# patch away puppeteer's arbitrary FreeBSD blocking 🙄
-cd node_modules 
+pip install -r requirements.txt
 
 patch -p1 << EOF
-diff -Naur node_modules/puppeteer/lib/cjs/puppeteer/node/BrowserFetcher.js node_modules_fixed/puppeteer/lib/cjs/puppeteer/node/BrowserFetcher.js
---- node_modules/puppeteer/lib/cjs/puppeteer/node/BrowserFetcher.js     2022-09-30 11:53:41.991795021 +0100
-+++ node_modules_fixed/puppeteer/lib/cjs/puppeteer/node/BrowserFetcher.js       2022-09-30 11:53:10.867991454 +0100
-@@ -180,6 +180,8 @@
-             this._platform = 'linux';
-         else if (platform === 'win32')
-             this._platform = os.arch() === 'x64' ? 'win64' : 'win32';
-+       else if (platform === 'freebsd')
-+           this._platform = 'linux'
-         else
-             (0, assert_js_1.assert)(this._platform, 'Unsupported platform: ' + platform);
-     }
-@@ -505,4 +507,4 @@
-     request.end();
-     return request;
- }
--//# sourceMappingURL=BrowserFetcher.js.map
-\ No newline at end of file
-+//# sourceMappingURL=BrowserFetcher.js.map
-diff -Naur node_modules/puppeteer/lib/cjs/puppeteer/node/BrowserFetcher.patch node_modules_fixed/puppeteer/lib/cjs/puppeteer/node/BrowserFetcher.patch
---- node_modules/puppeteer/lib/cjs/puppeteer/node/BrowserFetcher.patch  1970-01-01 01:00:00.000000000 +0100
-+++ node_modules_fixed/puppeteer/lib/cjs/puppeteer/node/BrowserFetcher.patch    2022-09-30 11:52:26.293600027 +0100
-@@ -0,0 +1,8 @@
-+183,184d182
-+<      else if (platform === 'freebsd')
-+<          this._platform = 'linux'
-+510c508
-+< //# sourceMappingURL=BrowserFetcher.js.map
-+---
-+> //# sourceMappingURL=BrowserFetcher.js.map
-+\ No newline at end of file
+diff --git a/src/undetected_chromedriver/_compat.py b/src/undetected_chromedriver/_compat.py
+index 6b2f28a..ad8bccc 100644
+--- a/src/undetected_chromedriver/_compat.py
++++ b/src/undetected_chromedriver/_compat.py
+@@ -155,6 +155,8 @@ class ChromeDriverManager(object):
+         if _platform in ("linux",):
+             _platform += "64"
+             exe_name = exe_name.format("")
++        if _platform in ("freebsd",):
++            exe_name = exe_name.format("")
+         if _platform in ("darwin",):
+             _platform = "mac64"
+             exe_name = exe_name.format("")
+diff --git a/src/undetected_chromedriver/patcher.py b/src/undetected_chromedriver/patcher.py
+index c20ead8..4c410e4 100644
+--- a/src/undetected_chromedriver/patcher.py
++++ b/src/undetected_chromedriver/patcher.py
+@@ -18,7 +18,7 @@ import zipfile
+
+ logger = logging.getLogger(__name__)
+
+-IS_POSIX = sys.platform.startswith(("darwin", "cygwin", "linux", "linux2"))
++IS_POSIX = sys.platform.startswith(("darwin", "cygwin", "linux", "linux2", "freebsd"))
+
+
+ class Patcher(object):
+diff --git a/src/utils.py b/src/utils.py
+index ceff7ec..dd3aba5 100644
+--- a/src/utils.py
++++ b/src/utils.py
+@@ -11,7 +11,7 @@ FLARESOLVERR_VERSION = None
+ CHROME_MAJOR_VERSION = None
+ USER_AGENT = None
+ XVFB_DISPLAY = None
+-PATCHED_DRIVER_PATH = None
++PATCHED_DRIVER_PATH = "/usr/local/bin/chromedriver"
+
+
+ def get_config_log_html() -> bool:
 EOF
-
-# Compile typescript
-npm run build 
-
-cd ..
 
 # -- Set up service
 
@@ -82,12 +77,10 @@ PATH=\$PATH:/usr/local/bin
 
 flaresolverr_precmd() {
         cd /usr/local/share/flaresolverr
-        export PUPPETEER_EXECUTABLE_PATH=/usr/local/bin/chrome
-        export HOST=0.0.0.0
 }
 
 command="/usr/sbin/daemon"
-command_args="-P \${pidfile} /usr/local/bin/npm start > /dev/null"
+command_args="-P \${pidfile} -S -T flaresolverr /usr/local/bin/python3.9 -u src/flaresolverr.py"
 
 run_rc_command "\$1"
 EOF
