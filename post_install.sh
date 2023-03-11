@@ -51,41 +51,5 @@ index ceff7ec..dd3aba5 100644
  def get_config_log_html() -> bool:
 EOF
 
-# -- Set up service
-
-cat > /usr/local/etc/rc.d/flaresolverr << EOF
-#
-# Author: C. R. Zamana (czamana at gmail dot com)
-#
-# PROVIDE: flaresolverr
-# REQUIRE: networking
-# KEYWORD:
-
-. /etc/rc.subr
-
-name="flaresolverr"
-rcvar="\${name}_enable"
-load_rc_config \${name}
-
-: \${flaresolverr_enable:="NO"}
-
-pidfile="/var/run/flaresolverr.pid"
-
-start_precmd="flaresolverr_precmd"
-
-PATH=\$PATH:/usr/local/bin
-
-flaresolverr_precmd() {
-        cd /usr/local/share/flaresolverr
-}
-
-command="/usr/sbin/daemon"
-command_args="-P \${pidfile} -S -T flaresolverr /usr/local/bin/python3.9 -u src/flaresolverr.py"
-
-run_rc_command "\$1"
-EOF
-
-chmod +x /usr/local/etc/rc.d/flaresolverr
-
 sysrc flaresolverr_enable=YES
 service flaresolverr start
