@@ -1,28 +1,15 @@
 #!/bin/sh
 
-cd /usr/local/share
+cd /usr/local/share || exit
 git clone https://github.com/FlareSolverr/FlareSolverr flaresolverr
-cd flaresolverr
+cd flaresolverr || exit
 
 # Checkout version
-git checkout v3.0.2
+git checkout v3.0.4
 
 pip install -r requirements.txt
 
-patch -p1 << EOF
-diff --git a/src/undetected_chromedriver/_compat.py b/src/undetected_chromedriver/_compat.py
-index 6b2f28a..ad8bccc 100644
---- a/src/undetected_chromedriver/_compat.py
-+++ b/src/undetected_chromedriver/_compat.py
-@@ -155,6 +155,8 @@ class ChromeDriverManager(object):
-         if _platform in ("linux",):
-             _platform += "64"
-             exe_name = exe_name.format("")
-+        if _platform in ("freebsd",):
-+            exe_name = exe_name.format("")
-         if _platform in ("darwin",):
-             _platform = "mac64"
-             exe_name = exe_name.format("")
+patch -V none -p1 << EOF
 diff --git a/src/undetected_chromedriver/patcher.py b/src/undetected_chromedriver/patcher.py
 index c20ead8..4c410e4 100644
 --- a/src/undetected_chromedriver/patcher.py
