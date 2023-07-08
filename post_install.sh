@@ -5,16 +5,16 @@ git clone https://github.com/FlareSolverr/FlareSolverr flaresolverr
 cd flaresolverr || exit
 
 # Checkout version
-git checkout v3.0.4
+git checkout v3.2.1
 
 pip install -r requirements.txt
 
 patch -V none -p1 << EOF
 diff --git a/src/undetected_chromedriver/patcher.py b/src/undetected_chromedriver/patcher.py
-index c20ead8..4c410e4 100644
+index 24da802..159ae8d 100644
 --- a/src/undetected_chromedriver/patcher.py
 +++ b/src/undetected_chromedriver/patcher.py
-@@ -18,7 +18,7 @@ import zipfile
+@@ -17,7 +17,7 @@ import zipfile
 
  logger = logging.getLogger(__name__)
 
@@ -24,10 +24,10 @@ index c20ead8..4c410e4 100644
 
  class Patcher(object):
 diff --git a/src/utils.py b/src/utils.py
-index ceff7ec..dd3aba5 100644
+index 3f06f5a..b72f834 100644
 --- a/src/utils.py
 +++ b/src/utils.py
-@@ -11,7 +11,7 @@ FLARESOLVERR_VERSION = None
+@@ -12,7 +12,7 @@ CHROME_EXE_PATH = None
  CHROME_MAJOR_VERSION = None
  USER_AGENT = None
  XVFB_DISPLAY = None
